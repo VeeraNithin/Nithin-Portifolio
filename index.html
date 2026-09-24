@@ -82,6 +82,7 @@
     .nav-header { position: sticky; top: 0; width: 100%; background: rgba(3, 3, 3, 0.6); backdrop-filter: blur(24px); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; padding: 20px 5vw; z-index: 99; }
     .nav-brand { font-size: 1.2rem; font-weight: 800; letter-spacing: 1px; color: #fff; cursor: pointer; transition: 0.3s;}
     .nav-brand:hover { text-shadow: 0 0 15px var(--cyan); }
+    
     .nav-links { display: flex; gap: 30px; }
     .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; cursor: pointer; }
     .nav-links a:hover { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5);}
@@ -124,6 +125,14 @@
     .hf-card { background: linear-gradient(135deg, rgba(24,24,24,0.95) 0%, rgba(8,8,8,0.95) 100%); border: 1px solid rgba(255, 204, 0, 0.2); text-decoration: none;}
     .hf-card:hover { border-color: rgba(255, 204, 0, 0.8); box-shadow: 0 20px 40px rgba(255, 204, 0, 0.15); }
 
+    /* --- TIMELINE & INITIATIVES (LONG CONTENT RE-ADDED!) --- */
+    .timeline-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+    .timeline-box { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 35px; backdrop-filter: blur(10px); transition: 0.4s; position: relative; cursor: pointer;}
+    .timeline-box:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
+    .timeline-meta { font-family: var(--font-code); font-size: 0.8rem; color: var(--cyan); margin-bottom: 12px; letter-spacing: 1px;}
+    .timeline-box h3 { font-size: 1.4rem; color: #fff; margin-bottom: 12px; font-weight: 700;}
+    .timeline-box p { color: var(--muted); font-size: 0.95rem; line-height: 1.7;}
+
     /* --- DIRECT CONNECT HUB --- */
     .connect-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 80px;}
     .connect-btn { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 30px 20px; text-align: center; text-decoration: none; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer;}
@@ -137,7 +146,7 @@
     .connect-btn.li:hover { border-color: #0077b5; background: rgba(0, 119, 181, 0.08); } .connect-btn.li:hover i { color: #0077b5; }
     .connect-btn.gh:hover { border-color: #fff; background: rgba(255, 255, 255, 0.08); } .connect-btn.gh:hover i { color: #fff; }
 
-    /* Profile Card */
+    /* Identity Card (Neon Logo, No Role) */
     .profile-card-hub { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 28px; padding: 50px; display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; backdrop-filter: blur(10px); transition: 0.4s;}
     .profile-card-hub:hover { border-color: var(--cyan); box-shadow: 0 0 40px rgba(0, 242, 254, 0.1); }
     .profile-left { display: flex; align-items: center; gap: 30px; flex-wrap: wrap;}
@@ -150,7 +159,7 @@
         box-shadow: 0 0 30px rgba(0, 242, 254, 0.2);
     }
     
-    .profile-info h3 { font-size: 2.2rem; color: #fff; margin-bottom: 6px; font-weight: 800;}
+    .profile-info h3 { font-size: 2.2rem; color: #fff; margin-bottom: 0; font-weight: 800;}
     
     .interactive-btn { background: #fff; color: #000; padding: 15px 30px; border-radius: 12px; font-weight: 700; text-decoration: none; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; border: none; font-size: 1rem;}
     .interactive-btn:hover { background: var(--cyan); transform: scale(1.05); box-shadow: 0 10px 20px rgba(0, 242, 254, 0.3);}
@@ -190,7 +199,7 @@
         .pp-hero-grid { grid-template-columns: 1fr; }
         .nav-links { display: none; }
         .profile-card-hub { flex-direction: column; text-align: center; justify-content: center;}
-        .profile-left { flex-direction: column; }
+        .profile-left { flex-direction: column; justify-content: center;}
     }
   </style>
 </head>
@@ -222,6 +231,8 @@
       <div class="nav-brand sound-hover">G.V. NITHIN</div>
       <div class="nav-links">
         <a href="#deployments" class="sound-hover">Deployments</a>
+        <a href="#initiatives" class="sound-hover">Initiatives</a>
+        <a href="#insights" class="sound-hover">Insights</a>
         <a href="#connect" class="sound-hover">Connect Hub</a>
       </div>
     </header>
@@ -230,13 +241,14 @@
       <p><i class="fa-solid fa-bolt"></i> PHILOSOPHY: WORK SMART, NOT HARD. LEVERAGE EXISTING TOOLS TO BUILD AND SHIP FIRST.</p>
     </div>
 
+    <!-- 1. DEPLOYMENTS -->
     <section class="section" id="deployments">
       <h2 class="section-header reveal">Production Deployments</h2>
       <p class="section-sub reveal">Direct, verifiable system builds. All architectures contain live working video telemetry.</p>
       
       <div class="bento-grid">
         
-        <!-- 1. Nithin-ASI -->
+        <!-- Nithin-ASI -->
         <div class="bento-card reveal open-project sound-hover sound-click" 
              data-title="Nithin-ASI" 
              data-tech="Local LLM | GGUF | PyTorch" 
@@ -252,7 +264,7 @@
           <div class="card-footer-action"><span class="btn-inspect">Inspect Architecture <i class="fa-solid fa-arrow-right"></i></span></div>
         </div>
 
-        <!-- 2. Nithin Lang -->
+        <!-- Nithin Lang -->
         <div class="bento-card reveal open-project sound-hover sound-click" 
              data-title="Nithin Lang" 
              data-tech="Custom Compiler | C++ | Architecture" 
@@ -268,7 +280,7 @@
           <div class="card-footer-action"><span class="btn-inspect">Inspect Architecture <i class="fa-solid fa-arrow-right"></i></span></div>
         </div>
         
-        <!-- 3. MMN - v1.0 -->
+        <!-- MMN - v1.0 -->
         <div class="bento-card reveal open-project sound-hover sound-click" 
              data-title="MMN-v1.0" 
              data-tech="Hardware AI | Custom IDE | Edge Logic" 
@@ -284,7 +296,7 @@
           <div class="card-footer-action"><span class="btn-inspect">Inspect Architecture <i class="fa-solid fa-arrow-right"></i></span></div>
         </div>
 
-        <!-- 4. VR Edge -->
+        <!-- VR Edge -->
         <div class="bento-card reveal open-project sound-hover sound-click" 
              data-title="VR Edge" 
              data-tech="Computer Vision | Edge AI | Telemetry" 
@@ -300,7 +312,7 @@
           <div class="card-footer-action"><span class="btn-inspect">Inspect Architecture <i class="fa-solid fa-arrow-right"></i></span></div>
         </div>
 
-        <!-- 5. N-Meet -->
+        <!-- N-Meet -->
         <div class="bento-card reveal open-project sound-hover sound-click" 
              data-title="N-Meet" 
              data-tech="WebRTC | Node.js | P2P Routing" 
@@ -316,7 +328,7 @@
           <div class="card-footer-action"><span class="btn-inspect">Inspect Architecture <i class="fa-solid fa-arrow-right"></i></span></div>
         </div>
 
-        <!-- 6. Auto News Poster -->
+        <!-- Auto News Poster (No Live Link, Video Only) -->
         <div class="bento-card reveal sound-hover">
           <div>
             <div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/2Ou0xfLiacw?rel=0" allowfullscreen></iframe></div>
@@ -327,7 +339,7 @@
           <div class="card-footer-action"><span class="video-only-badge"><i class="fa-solid fa-video"></i> Video Verification Only</span></div>
         </div>
 
-        <!-- 7. Voiceflow Systems -->
+        <!-- Voiceflow Systems (No Live Link, Video Only) -->
         <div class="bento-card reveal sound-hover">
           <div>
             <div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/NHXEc61YUyM?rel=0" allowfullscreen></iframe></div>
@@ -338,7 +350,7 @@
           <div class="card-footer-action"><span class="video-only-badge"><i class="fa-solid fa-video"></i> Video Verification Only</span></div>
         </div>
 
-        <!-- 8. Nithinverse -->
+        <!-- Nithinverse -->
         <div class="bento-card reveal open-project sound-hover sound-click" 
              data-title="Nithinverse" 
              data-tech="Ecosystem | Infrastructure | API Matrix" 
@@ -354,7 +366,7 @@
           <div class="card-footer-action"><span class="btn-inspect">Inspect Architecture <i class="fa-solid fa-arrow-right"></i></span></div>
         </div>
 
-        <!-- 9. HuggingFace Custom Card -->
+        <!-- HuggingFace Custom Card -->
         <a href="https://huggingface.co/NithinAI12/NithinX-Omni-Tokenizer-400k" target="_blank" class="bento-card hf-card reveal sound-hover sound-click" style="text-decoration: none;">
           <div>
             <div style="height: 140px; display: flex; align-items: center; justify-content: center; background: rgba(255,204,0,0.03); border-radius: 16px; margin-bottom: 24px; border: 1px dashed rgba(255,204,0,0.2);">
@@ -372,7 +384,63 @@
       </div>
     </section>
 
-    <!-- DIRECT CONNECT HUB -->
+    <!-- 2. INITIATIVES (ADDED BACK!) -->
+    <section class="section" id="initiatives" style="border-top: 1px solid var(--glass-border);">
+      <h2 class="section-header reveal">Initiatives &amp; Engineering Labs</h2>
+      <p class="section-sub reveal">Moving beyond screens to educate, mentor, and physically execute engineering projects on the ground.</p>
+      
+      <div class="timeline-container">
+        
+        <div class="timeline-box reveal sound-hover">
+          <div class="timeline-meta">// 2-MONTH COMMUNITY IMPACT</div>
+          <h3>Velangi 2-Month Summer AI Bootcamp</h3>
+          <p>Founded and executed an intensive 2-month summer training program at Velangi. Trained 30+ students in hands-on AI utilization, practical prompt architectures, and open-source model execution. Bridged the digital gap by equipping local youth with real-world computer vision and logic skills.</p>
+        </div>
+
+        <div class="timeline-box reveal sound-hover">
+          <div class="timeline-meta">// CAMPUS INNOVATION</div>
+          <h3>Pydah College of Engineering Lab Developments</h3>
+          <p>Spearheading practical AI & Machine Learning applications within Pydah College of Engineering. Serving as Class Representative (CR) while designing edge robotic proofs-of-concept (NAIRO), microcontroller motor driver telemetry, and localized language model deployments.</p>
+        </div>
+
+        <div class="timeline-box reveal sound-hover">
+          <div class="timeline-meta">// APPLIED SYSTEMS & PRODUCTS</div>
+          <h3>Edge Robotic Systems & Proprietary Compilers</h3>
+          <p>Engineered hardware and software bridges including NAIRO (Edge AI robot concept), Vinayaka Robotics gesture vision controls, and NithinLang custom compiler engines for deterministic neural deployment.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. INSIGHTS & SEMINARS (ADDED BACK!) -->
+    <section class="section" id="insights" style="border-top: 1px solid var(--glass-border);">
+      <h2 class="section-header reveal">Seminars &amp; Technical Insights</h2>
+      <p class="section-sub reveal">Thought leadership on local inference, edge robotics, and leveraging automation tools to accelerate time-to-market.</p>
+      
+      <div class="timeline-container">
+        
+        <div class="timeline-box reveal sound-hover">
+          <div class="timeline-meta">// SEMINAR KEYNOTE</div>
+          <h3>Bilingual Technical Elocution on AI &amp; Youth</h3>
+          <p>Delivered an award-winning bilingual presentation analyzing the transition from cloud-dependent computing to localized edge inferencing. Highlighted practical avenues for engineering students to master multi-agent orchestration.</p>
+        </div>
+
+        <div class="timeline-box reveal sound-hover">
+          <div class="timeline-meta">// ARCHITECTURAL PAPER</div>
+          <h3>Sub-Word Tokenization &amp; Low-Resource Engines</h3>
+          <p>Authored deep-dive structural documentation on the NithinX 400k tokenizer architecture, dissecting why massive vocabulary sizes drastically reduce latency during multilingual inference on edge microprocessors.</p>
+        </div>
+
+        <div class="timeline-box reveal sound-hover">
+          <div class="timeline-meta">// WORKFLOW BLUEPRINT</div>
+          <h3>The "Work Smart, Ship First" Playbook</h3>
+          <p>Documenting the operational philosophy of combining existing enterprise APIs (Apollo, Gemini, Make) with custom local scripts to build production-grade workflows in days instead of quarters.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4. DIRECT CONNECT HUB (NEON GV FIX APPLIED!) -->
     <section class="section" id="connect" style="border-top: 1px solid var(--glass-border);">
       <h2 class="section-header reveal">Connect Direct.</h2>
       
@@ -391,16 +459,18 @@
         </a>
       </div>
 
-      <!-- Identity Card (Cleaned up!) -->
+      <!-- Identity Card -->
       <div class="profile-card-hub reveal">
         <div class="profile-left">
+          
           <!-- The Neon GV Logo (No images to break) -->
-          <div class="profile-img-neon">GV</div>
+          <div class="profile-img-neon sound-hover">GV</div>
           
           <div class="profile-info">
             <h3 style="margin-bottom: 0;">G.V. Nithin</h3>
             <!-- Role completely removed as requested -->
           </div>
+
         </div>
         <div>
           <a href="mailto:nithingv524@gmail.com" class="interactive-btn sound-hover sound-click">
@@ -467,13 +537,9 @@
     let audioEnabled = false;
 
     function initAudio() {
-        if (!audioCtx) {
-            audioCtx = new AudioContext();
-        }
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
-        audioEnabled = !audioEnabled; // Toggle
+        if (!audioCtx) { audioCtx = new AudioContext(); }
+        if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+        audioEnabled = !audioEnabled; 
         
         const icon = document.getElementById('audio-icon');
         const text = document.getElementById('audio-text');
@@ -483,8 +549,7 @@
             text.innerText = 'Audio Engine Active';
             document.getElementById('audio-unlock').style.background = 'var(--cyan)';
             document.getElementById('audio-unlock').style.color = '#000';
-            playBeep(600, 'sine', 0.1, 0.1);
-            playBeep(800, 'sine', 0.15, 0.1, 0.1);
+            playBeep(600, 'sine', 0.1, 0.1); playBeep(800, 'sine', 0.15, 0.1, 0.1);
         } else {
             icon.className = 'fa-solid fa-volume-xmark';
             text.innerText = 'Enable Audio Engine';
@@ -496,43 +561,32 @@
     function playBeep(freq, type, duration, vol, delay=0) {
         if(!audioEnabled || !audioCtx) return;
         setTimeout(() => {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = type;
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            
+            const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+            osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
             gain.gain.setValueAtTime(vol, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-            
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + duration);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + duration);
         }, delay * 1000);
     }
 
     function playSwoosh() {
         if(!audioEnabled || !audioCtx) return;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+        const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+        osc.type = 'sine'; osc.frequency.setValueAtTime(100, audioCtx.currentTime);
         osc.frequency.exponentialRampToValueAtTime(20, audioCtx.currentTime + 0.5);
         gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        osc.connect(gain); gain.connect(audioCtx.destination);
         osc.start(); osc.stop(audioCtx.currentTime + 0.5);
     }
 
-    // Attach sound events
     document.querySelectorAll('.sound-hover').forEach(el => {
         el.addEventListener('mouseenter', () => playBeep(900, 'sine', 0.05, 0.02));
     });
     document.querySelectorAll('.sound-click').forEach(el => {
         el.addEventListener('click', () => {
-            playBeep(300, 'square', 0.1, 0.05);
-            playBeep(450, 'square', 0.15, 0.05, 0.1);
+            playBeep(300, 'square', 0.1, 0.05); playBeep(450, 'square', 0.15, 0.05, 0.1);
         });
     });
 
@@ -548,64 +602,42 @@
     let mouse = { x: -1000, y: -1000 };
     window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
 
-    // Air Particles
     let airParticles = [];
     for(let i=0; i<60; i++) {
         airParticles.push({
             x: Math.random() * ambCanvas.width, y: Math.random() * ambCanvas.height,
             vx: (Math.random() - 0.5) * 0.3, vy: -Math.random() * 0.5 - 0.1,
-            size: Math.random() * 1.5 + 0.5,
-            baseX: 0
+            size: Math.random() * 1.5 + 0.5, baseX: 0
         });
     }
 
-    // Meteors
     let meteors = [];
     function spawnMeteor() {
-        if(Math.random() < 0.02) { // 2% chance per frame
-            meteors.push({
-                x: Math.random() * ambCanvas.width + ambCanvas.width/2, y: -50,
-                length: Math.random() * 80 + 40,
-                speed: Math.random() * 10 + 15,
-                opacity: 1
-            });
+        if(Math.random() < 0.02) { 
+            meteors.push({ x: Math.random() * ambCanvas.width + ambCanvas.width/2, y: -50, length: Math.random() * 80 + 40, speed: Math.random() * 10 + 15, opacity: 1 });
         }
     }
 
     function drawAmbient() {
         ambCtx.clearRect(0, 0, ambCanvas.width, ambCanvas.height);
-        
-        // Draw Air
         ambCtx.fillStyle = 'rgba(255, 255, 255, 0.3)';
         airParticles.forEach(p => {
-            // Magnetic effect from mouse
             let dx = mouse.x - p.x; let dy = mouse.y - p.y;
             let dist = Math.hypot(dx, dy);
-            if(dist < 150) {
-                p.x -= dx * 0.01; p.y -= dy * 0.01;
-            }
-            
+            if(dist < 150) { p.x -= dx * 0.01; p.y -= dy * 0.01; }
             p.x += p.vx; p.y += p.vy;
             if(p.y < 0) { p.y = ambCanvas.height; p.x = Math.random() * ambCanvas.width; }
             if(p.x < 0 || p.x > ambCanvas.width) p.vx *= -1;
-
             ambCtx.beginPath(); ambCtx.arc(p.x, p.y, p.size, 0, Math.PI*2); ambCtx.fill();
         });
 
-        // Draw Meteors
         spawnMeteor();
         for(let i = meteors.length - 1; i >= 0; i--) {
-            let m = meteors[i];
-            m.x -= m.speed; m.y += m.speed;
-            m.opacity -= 0.01;
-
+            let m = meteors[i]; m.x -= m.speed; m.y += m.speed; m.opacity -= 0.01;
             let grad = ambCtx.createLinearGradient(m.x, m.y, m.x + m.length, m.y - m.length);
-            grad.addColorStop(0, `rgba(0, 242, 254, ${m.opacity})`);
-            grad.addColorStop(1, 'rgba(0, 242, 254, 0)');
-
+            grad.addColorStop(0, `rgba(0, 242, 254, ${m.opacity})`); grad.addColorStop(1, 'rgba(0, 242, 254, 0)');
             ambCtx.strokeStyle = grad; ambCtx.lineWidth = 2;
             ambCtx.beginPath(); ambCtx.moveTo(m.x, m.y); ambCtx.lineTo(m.x + m.length, m.y - m.length); ambCtx.stroke();
-
             if(m.opacity <= 0 || m.y > ambCanvas.height) meteors.splice(i, 1);
         }
         requestAnimationFrame(drawAmbient);
@@ -615,8 +647,7 @@
     // ==========================================
     // 3. SCROLL NARRATIVE & UI LOGIC
     // ==========================================
-    let isTicking = false;
-    let lastScene = -1;
+    let isTicking = false; let lastScene = -1;
 
     window.addEventListener('scroll', () => {
       if (!isTicking) { window.requestAnimationFrame(updateNarrative); isTicking = true; }
@@ -627,11 +658,7 @@
       progress = Math.max(0, Math.min(progress, 1));
       let currentScene = progress > 0.75 ? 3 : progress > 0.50 ? 2 : progress > 0.25 ? 1 : 0;
       
-      // Play swoosh sound if scene changes
-      if(currentScene !== lastScene) {
-          playSwoosh();
-          lastScene = currentScene;
-      }
+      if(currentScene !== lastScene) { playSwoosh(); lastScene = currentScene; }
 
       document.querySelectorAll('.scene').forEach((scene, index) => {
         scene.classList.toggle('active', index === currentScene);
@@ -656,8 +683,7 @@
 
     document.querySelectorAll('.open-project').forEach(card => {
         card.addEventListener('click', function(e) {
-            e.stopPropagation();
-            playSwoosh(); // Sound effect
+            e.stopPropagation(); playSwoosh(); 
             
             const title = this.getAttribute('data-title');
             const desc = this.getAttribute('data-desc');
@@ -680,20 +706,15 @@
                 techContainer.appendChild(span);
             });
 
-            liveContainer.classList.remove('active');
-            liveFrame.src = "";
-            liveFrame.removeAttribute('srcdoc');
+            liveContainer.classList.remove('active'); liveFrame.src = ""; liveFrame.removeAttribute('srcdoc');
             testBtn.innerHTML = '<i class="fa-solid fa-bolt"></i> Boot Live System';
             
-            projectPage.classList.add('open');
-            document.body.classList.add('modal-open');
+            projectPage.classList.add('open'); document.body.classList.add('modal-open');
         });
     });
 
     closeBtn.addEventListener('click', () => {
-        playSwoosh();
-        projectPage.classList.remove('open');
-        document.body.classList.remove('modal-open');
+        playSwoosh(); projectPage.classList.remove('open'); document.body.classList.remove('modal-open');
         setTimeout(() => { document.getElementById('pp-yt').src = ""; liveFrame.src = ""; liveFrame.removeAttribute('srcdoc'); }, 500);
     });
 
@@ -722,13 +743,10 @@
         } else {
             if(currentLiveLink.includes('github.com') || currentLiveLink.includes('huggingface.co')) {
                 window.open(currentLiveLink, '_blank');
-            } else {
-                liveFrame.src = liveFrame.src; 
-            }
+            } else { liveFrame.src = liveFrame.src; }
         }
     });
 
-    // Reveal Elements
     const observer = new IntersectionObserver((entries, obs) => {
       entries.forEach(entry => {
         if(entry.isIntersecting) { entry.target.classList.add('active'); obs.unobserve(entry.target); }
@@ -754,15 +772,13 @@
       nCtx.clearRect(0, 0, nCanvas.width, nCanvas.height);
       nCtx.fillStyle = '#fff'; nCtx.lineWidth = 0.5;
       for(let i=0; i<nParticles.length; i++) {
-        let p = nParticles[i];
-        p.x += p.vx; p.y += p.vy;
+        let p = nParticles[i]; p.x += p.vx; p.y += p.vy;
         if(p.x < 0 || p.x > nCanvas.width) p.vx *= -1;
         if(p.y < 0 || p.y > nCanvas.height) p.vy *= -1;
         nCtx.beginPath(); nCtx.arc(p.x, p.y, 1.5, 0, Math.PI*2); nCtx.fill();
 
         for(let j=i+1; j<nParticles.length; j++) {
-          let p2 = nParticles[j];
-          let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+          let p2 = nParticles[j]; let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
           if(dist < 120) {
             nCtx.strokeStyle = `rgba(255, 255, 255, ${0.2 - dist/600})`;
             nCtx.beginPath(); nCtx.moveTo(p.x, p.y); nCtx.lineTo(p2.x, p2.y); nCtx.stroke();
