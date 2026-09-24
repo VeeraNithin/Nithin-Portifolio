@@ -9,17 +9,14 @@
   
   <style>
     /* -----------------------------------------------
-       EXTENDED ELITE PORTFOLIO - GPT-6 ASTRA HYPER
+       EXTENDED ELITE PORTFOLIO - GPT-6 ASTRA HYPER + SOUNDS & METEORS
        ----------------------------------------------- */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@100;400;600;700&display=swap');
 
     :root {
-      --bg: #030303;
-      --card-bg: rgba(14, 14, 14, 0.85);
-      --text: #f5f5f7;
-      --muted: #8e8e93;
-      --cyan: #00f2fe;
-      --blue: #4facfe;
+      --bg: #030303; --card-bg: rgba(14, 14, 14, 0.85);
+      --text: #f5f5f7; --muted: #8e8e93;
+      --cyan: #00f2fe; --blue: #4facfe;
       --glass-border: rgba(255, 255, 255, 0.08);
       --font-main: 'Inter', -apple-system, sans-serif;
       --font-code: 'JetBrains Mono', monospace;
@@ -30,24 +27,37 @@
     body {
       background-color: var(--bg); color: var(--text);
       font-family: var(--font-main); overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-      background-image: 
-        linear-gradient(to right, rgba(255,255,255,0.02) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255,255,255,0.02) 1px, transparent 1px);
-      background-size: 50px 50px;
+      -webkit-font-smoothing: antialiased; cursor: default;
     }
     body.modal-open { overflow: hidden; }
 
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #000; }
-    ::-webkit-scrollbar-thumb { background: #262626; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+    /* --- AMBIENT CANVAS (AIR & METEORS) --- */
+    #ambientCanvas {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 1; pointer-events: none; opacity: 0.8;
+    }
+
+    /* --- SOUND INITIATOR --- */
+    #audio-unlock {
+      position: fixed; bottom: 20px; right: 20px; z-index: 99999;
+      background: rgba(0, 242, 254, 0.1); border: 1px solid var(--cyan);
+      color: var(--cyan); padding: 10px 20px; border-radius: 30px;
+      font-family: var(--font-code); font-size: 0.8rem; cursor: pointer;
+      backdrop-filter: blur(10px); transition: 0.3s; display: flex; align-items: center; gap: 8px;
+    }
+    #audio-unlock:hover { background: var(--cyan); color: #000; box-shadow: 0 0 20px rgba(0, 242, 254, 0.4); }
+    #audio-unlock.hidden { opacity: 0; pointer-events: none; }
 
     /* --- SCROLL NARRATIVE (ASTRA VIBE) --- */
-    #story-container { height: 400vh; position: relative; }
-    .sticky-box { position: sticky; top: 0; left: 0; width: 100vw; height: 100vh; overflow: hidden; background: #000; display: flex; justify-content: center; align-items: center; }
+    #story-container { height: 400vh; position: relative; z-index: 5;}
+    .sticky-box { position: sticky; top: 0; left: 0; width: 100vw; height: 100vh; overflow: hidden; background: transparent; display: flex; justify-content: center; align-items: center; }
     
-    .scene { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.8s ease; text-align: center; z-index: 5; pointer-events: none;}
-    .scene.active { opacity: 1; z-index: 10; }
+    .scene { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.8s ease; text-align: center; pointer-events: none;}
+    .scene.active { opacity: 1; }
     
     .story-text { font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 800; letter-spacing: -2px; margin-top: 50px; background: linear-gradient(180deg, #fff 0%, #888 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; opacity: 0; transform: translateY(40px) scale(0.95); transition: all 1.2s cubic-bezier(0.2, 0.8, 0.2, 1); }
     .scene.active .story-text { opacity: 1; transform: translateY(0) scale(1); }
@@ -64,142 +74,99 @@
     .ring-2 { width: 70%; height: 70%; animation: spin 3s linear infinite reverse; }
     .ring-3 { width: 40%; height: 40%; animation: spin 2s linear infinite; box-shadow: 0 0 30px rgba(0, 229, 255, 0.4); }
     @keyframes spin { 100% { transform: rotate(360deg); } }
-    #neuralCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; opacity: 0.4; }
-    .brain-core { width: 40px; height: 40px; background: #fff; border-radius: 50%; box-shadow: 0 0 80px 30px rgba(255, 255, 255, 0.5); z-index: 2; position: relative; }
+    #neuralCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.4; }
+    .brain-core { width: 40px; height: 40px; background: #fff; border-radius: 50%; box-shadow: 0 0 80px 30px rgba(255, 255, 255, 0.5); position: relative; }
 
     /* --- PORTFOLIO MAIN PAGE --- */
     .portfolio-content { position: relative; background: transparent; z-index: 20; }
-    .nav-header { position: sticky; top: 0; width: 100%; background: rgba(3, 3, 3, 0.85); backdrop-filter: blur(24px); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; padding: 20px 5vw; z-index: 99; }
-    .nav-brand { font-size: 1.2rem; font-weight: 800; letter-spacing: 1px; color: #fff; }
+    .nav-header { position: sticky; top: 0; width: 100%; background: rgba(3, 3, 3, 0.6); backdrop-filter: blur(24px); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; padding: 20px 5vw; z-index: 99; }
+    .nav-brand { font-size: 1.2rem; font-weight: 800; letter-spacing: 1px; color: #fff; cursor: pointer; transition: 0.3s;}
+    .nav-brand:hover { text-shadow: 0 0 15px var(--cyan); }
     .nav-links { display: flex; gap: 30px; }
-    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
-    .nav-links a:hover { color: #fff; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; cursor: pointer; }
+    .nav-links a:hover { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.5);}
 
     /* Philosophy Banner */
-    .philosophy-banner {
-        background: linear-gradient(90deg, rgba(16,16,16,0.9) 0%, rgba(5,5,5,0.95) 100%);
-        border-bottom: 1px solid var(--glass-border); padding: 30px 5vw; text-align: center;
-    }
-    .philosophy-banner p {
-        font-family: var(--font-code); color: var(--cyan); font-size: 0.95rem; font-weight: 600; letter-spacing: 1.5px;
-    }
+    .philosophy-banner { background: linear-gradient(90deg, rgba(16,16,16,0.8) 0%, rgba(5,5,5,0.9) 100%); border-bottom: 1px solid var(--glass-border); padding: 30px 5vw; text-align: center; }
+    .philosophy-banner p { font-family: var(--font-code); color: var(--cyan); font-size: 0.95rem; font-weight: 600; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0, 242, 254, 0.3);}
 
     .section { padding: 120px 5vw; max-width: 1440px; margin: 0 auto; }
     .section-header { font-size: clamp(2.2rem, 4vw, 3.8rem); font-weight: 800; letter-spacing: -2px; margin-bottom: 20px; text-align: center; color: #fff;}
     .section-sub { font-size: 1.1rem; color: var(--muted); text-align: center; max-width: 700px; margin: 0 auto 70px; line-height: 1.6; }
 
-    /* BENTO GRID (ALL VIDEOS DIRECTLY EMBEDDED & VISIBLE) */
+    /* BENTO GRID */
     .bento-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 32px; }
     
     .bento-card { 
       background: var(--card-bg); border: 1px solid var(--glass-border); 
       border-radius: 24px; padding: 28px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
       backdrop-filter: blur(12px); display: flex; flex-direction: column; justify-content: space-between;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4); cursor: pointer;
     }
-    .bento-card:hover { border-color: rgba(255,255,255,0.2); background: rgba(22,22,22,0.95); transform: translateY(-8px); box-shadow: 0 25px 50px rgba(0,0,0,0.8); }
+    .bento-card:hover { border-color: rgba(255,255,255,0.2); background: rgba(22,22,22,0.95); transform: translateY(-8px) scale(1.02); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 242, 254, 0.1); }
 
-    .video-frame {
-      position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
-      border-radius: 16px; margin-bottom: 24px; background: #000; border: 1px solid rgba(255,255,255,0.06);
-    }
+    .video-frame { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 16px; margin-bottom: 24px; background: #000; border: 1px solid rgba(255,255,255,0.06); pointer-events: none;}
     .video-frame iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
     
     .tech-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
-    .tech-tag { font-family: var(--font-code); font-size: 0.72rem; color: #a1a1a6; background: rgba(255,255,255,0.03); padding: 5px 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.08); }
+    .tech-tag { font-family: var(--font-code); font-size: 0.72rem; color: #a1a1a6; background: rgba(255,255,255,0.03); padding: 5px 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.08); transition: 0.3s;}
+    .bento-card:hover .tech-tag { background: rgba(0, 242, 254, 0.1); border-color: rgba(0, 242, 254, 0.3); color: var(--cyan);}
+    
     .bento-card h3 { font-size: 1.6rem; margin-bottom: 12px; font-weight: 700; letter-spacing: -0.5px; color: #fff;}
     .bento-card p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px;}
     
     .card-footer-action { display: flex; align-items: center; justify-content: space-between; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); }
-    .btn-inspect {
-      color: #fff; font-size: 0.9rem; font-weight: 600; cursor: pointer; text-decoration: none;
-      display: inline-flex; align-items: center; gap: 8px; transition: 0.3s;
-    }
-    .btn-inspect:hover { color: var(--cyan); transform: translateX(4px); }
+    .btn-inspect { color: #fff; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; }
+    .bento-card:hover .btn-inspect { color: var(--cyan); transform: translateX(5px); }
     .video-only-badge { font-family: var(--font-code); font-size: 0.75rem; color: #666; display: flex; align-items: center; gap: 6px; }
 
     /* HF Card */
-    .hf-card { background: linear-gradient(135deg, rgba(24,24,24,0.95) 0%, rgba(8,8,8,0.95) 100%); border: 1px solid rgba(255, 204, 0, 0.3); }
-    .hf-card:hover { border-color: rgba(255, 204, 0, 0.8); box-shadow: 0 20px 40px rgba(255, 204, 0, 0.1); }
+    .hf-card { background: linear-gradient(135deg, rgba(24,24,24,0.95) 0%, rgba(8,8,8,0.95) 100%); border: 1px solid rgba(255, 204, 0, 0.2); text-decoration: none;}
+    .hf-card:hover { border-color: rgba(255, 204, 0, 0.8); box-shadow: 0 20px 40px rgba(255, 204, 0, 0.15); }
 
-    /* --- TIMELINE & INITIATIVES (LONG CONTENT) --- */
-    .timeline-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
-    .timeline-box {
-      background: var(--card-bg); border: 1px solid var(--glass-border);
-      border-radius: 20px; padding: 35px; backdrop-filter: blur(10px);
-      transition: 0.4s; position: relative;
-    }
-    .timeline-box:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-5px); }
-    .timeline-meta { font-family: var(--font-code); font-size: 0.8rem; color: var(--cyan); margin-bottom: 12px; letter-spacing: 1px;}
-    .timeline-box h3 { font-size: 1.4rem; color: #fff; margin-bottom: 12px; font-weight: 700;}
-    .timeline-box p { color: var(--muted); font-size: 0.95rem; line-height: 1.7;}
-
-    /* --- DIRECT CONNECT HUB (NO FORMS) --- */
+    /* --- DIRECT CONNECT HUB --- */
     .connect-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 80px;}
-    .connect-btn {
-      background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 16px;
-      padding: 30px 20px; text-align: center; text-decoration: none; color: #fff;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
+    .connect-btn { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 30px 20px; text-align: center; text-decoration: none; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer;}
     .connect-btn i { font-size: 2.2rem; transition: 0.3s; }
     .connect-btn span { font-weight: 600; font-size: 1rem; letter-spacing: 0.5px;}
     .connect-btn .sub { font-family: var(--font-code); font-size: 0.75rem; color: var(--muted); }
     
-    .connect-btn.wa:hover { border-color: #25D366; background: rgba(37, 211, 102, 0.08); transform: translateY(-6px); }
-    .connect-btn.wa:hover i { color: #25D366; }
-    .connect-btn.mail:hover { border-color: #ea4335; background: rgba(234, 67, 53, 0.08); transform: translateY(-6px); }
-    .connect-btn.mail:hover i { color: #ea4335; }
-    .connect-btn.li:hover { border-color: #0077b5; background: rgba(0, 119, 181, 0.08); transform: translateY(-6px); }
-    .connect-btn.li:hover i { color: #0077b5; }
-    .connect-btn.gh:hover { border-color: #fff; background: rgba(255, 255, 255, 0.08); transform: translateY(-6px); }
-    .connect-btn.gh:hover i { color: #fff; }
-    .connect-btn.ig:hover { border-color: #E1306C; background: rgba(225, 48, 108, 0.08); transform: translateY(-6px); }
-    .connect-btn.ig:hover i { color: #E1306C; }
+    .connect-btn:hover { transform: translateY(-6px) scale(1.05); box-shadow: 0 15px 30px rgba(0,0,0,0.5); }
+    .connect-btn.wa:hover { border-color: #25D366; background: rgba(37, 211, 102, 0.08); } .connect-btn.wa:hover i { color: #25D366; }
+    .connect-btn.mail:hover { border-color: #ea4335; background: rgba(234, 67, 53, 0.08); } .connect-btn.mail:hover i { color: #ea4335; }
+    .connect-btn.li:hover { border-color: #0077b5; background: rgba(0, 119, 181, 0.08); } .connect-btn.li:hover i { color: #0077b5; }
+    .connect-btn.gh:hover { border-color: #fff; background: rgba(255, 255, 255, 0.08); } .connect-btn.gh:hover i { color: #fff; }
 
     /* Profile Card */
-    .profile-card-hub {
-      background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 28px;
-      padding: 50px; display: flex; align-items: center; justify-content: space-between; gap: 40px;
-      flex-wrap: wrap; backdrop-filter: blur(10px);
-    }
+    .profile-card-hub { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 28px; padding: 50px; display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; backdrop-filter: blur(10px); transition: 0.4s;}
+    .profile-card-hub:hover { border-color: var(--cyan); box-shadow: 0 0 40px rgba(0, 242, 254, 0.1); }
     .profile-left { display: flex; align-items: center; gap: 30px; flex-wrap: wrap;}
-    .profile-img { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 2px solid var(--glass-border); content: url('image_3455c0.jpg'); background: #111; }
+    .profile-img { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 2px solid var(--glass-border); content: url('image_3455c0.jpg'); background: #111; transition: 0.5s; filter: grayscale(20%);}
+    .profile-card-hub:hover .profile-img { filter: grayscale(0%); border-color: var(--cyan); transform: rotate(5deg) scale(1.05);}
     .profile-info h3 { font-size: 2.2rem; color: #fff; margin-bottom: 6px; font-weight: 800;}
     .profile-info p { color: var(--cyan); font-family: var(--font-code); font-size: 0.95rem;}
+    
+    .interactive-btn { background: #fff; color: #000; padding: 15px 30px; border-radius: 12px; font-weight: 700; text-decoration: none; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; border: none; font-size: 1rem;}
+    .interactive-btn:hover { background: var(--cyan); transform: scale(1.05); box-shadow: 0 10px 20px rgba(0, 242, 254, 0.3);}
 
-    /* Modal for projects that have source code/live sites */
-    .project-page-overlay {
-        position: fixed; top: 100vh; left: 0; width: 100vw; height: 100vh;
-        background: radial-gradient(circle at 50% 0%, rgba(30, 30, 30, 0.4), transparent 50%), #030303;
-        z-index: 100000; overflow-y: auto; transition: top 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-        display: flex; flex-direction: column;
-    }
+    /* Modal Styles (Shortened for brevity but fully functional) */
+    .project-page-overlay { position: fixed; top: 100vh; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle at 50% 0%, rgba(10, 30, 50, 0.6), transparent 50%), #030303; z-index: 100000; overflow-y: auto; transition: top 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; flex-direction: column; }
     .project-page-overlay.open { top: 0; }
-    .pp-header {
-        position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center;
-        padding: 20px 5vw; background: rgba(3,3,3,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); z-index: 10;
-    }
+    .pp-header { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; padding: 20px 5vw; background: rgba(3,3,3,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); z-index: 10; }
     .pp-close-btn { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 10px 24px; border-radius: 30px; font-size: 0.95rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; font-weight: 600;}
-    .pp-close-btn:hover { background: #fff; color: #000; }
+    .pp-close-btn:hover { background: #ff3333; color: #fff; border-color: #ff3333; box-shadow: 0 0 20px rgba(255, 51, 51, 0.4);}
     .pp-content { padding: 60px 5vw 100px; max-width: 1300px; margin: 0 auto; width: 100%; }
-
     .pp-hero-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 60px; align-items: center; margin-bottom: 50px; }
-    .pp-title { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; letter-spacing: -1.5px; line-height: 1.1; color: #fff; margin-bottom: 15px;}
+    .pp-title { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; letter-spacing: -1.5px; color: #fff; margin-bottom: 15px;}
     .pp-desc { font-size: 1.1rem; color: #a1a1a6; line-height: 1.7; font-weight: 400; margin-bottom: 20px;}
     .pp-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding-top: 20px; border-top: 1px solid var(--glass-border);}
     .spec-item { display: flex; flex-direction: column; gap: 6px; }
     .spec-label { font-family: var(--font-code); font-size: 0.75rem; color: #666; text-transform: uppercase; }
     .spec-value { font-weight: 600; font-size: 1rem; color: #fff; display: flex; align-items: center; gap: 8px;}
     .status-dot { width: 8px; height: 8px; background: #32d74b; border-radius: 50%; box-shadow: 0 0 10px #32d74b; }
-
-    .pp-video-container { position: relative; padding-bottom: 56.25%; background: #000; border-radius: 16px; overflow: hidden; border: 1px solid #222; }
+    .pp-video-container { position: relative; padding-bottom: 56.25%; background: #000; border-radius: 16px; overflow: hidden; border: 1px solid #222; box-shadow: 0 20px 50px rgba(0,0,0,0.6);}
     .pp-video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-
     .pp-action-bar { display: flex; align-items: center; justify-content: space-between; padding: 30px; background: rgba(15,15,15,0.8); border: 1px solid var(--glass-border); border-radius: 20px; flex-wrap: wrap; gap: 20px; }
-    .test-it-btn { background: #fff; color: #000; border: none; padding: 16px 32px; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s;}
-    .test-it-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255,255,255,0.2); }
-
     .live-website-container { display: none; width: 100%; height: 80vh; margin-top: 40px; border-radius: 16px; border: 1px solid #333; overflow: hidden; background: #000; }
     .live-website-container.active { display: flex; flex-direction: column; }
     .mac-header { background: #111; padding: 14px 20px; display: flex; gap: 8px; border-bottom: 1px solid #222; align-items: center;}
@@ -209,10 +176,7 @@
     .live-website-container iframe { width: 100%; flex-grow: 1; border: none; background: #0a0a0a;}
 
     /* Footer */
-    .footer { border-top: 1px solid #111; padding: 60px 5vw; text-align: center; color: #666; font-family: var(--font-code); font-size: 0.85rem;}
-    .footer-text { margin-bottom: 12px; color: #888; }
-    .footer-copyright { font-size: 0.75rem; color: #555; }
-
+    .footer { border-top: 1px solid #111; padding: 60px 5vw; text-align: center; color: #666; font-family: var(--font-code); font-size: 0.85rem; position: relative; z-index: 20;}
     .reveal { opacity: 0; transform: translateY(30px); transition: 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
     .reveal.active { opacity: 1; transform: translateY(0); }
 
@@ -226,7 +190,16 @@
 </head>
 <body>
 
-  <!-- SCROLL NARRATIVE (ASTRA VIBE) -->
+  <!-- AMBIENT CANVAS (AIR PARTICLES & METEORS) -->
+  <canvas id="ambientCanvas"></canvas>
+
+  <!-- SOUND ACTIVATION (Required by browsers to play audio) -->
+  <div id="audio-unlock" onclick="initAudio()">
+    <i class="fa-solid fa-volume-xmark" id="audio-icon"></i> 
+    <span id="audio-text">Enable Audio Engine</span>
+  </div>
+
+  <!-- SCROLL NARRATIVE -->
   <div id="story-container">
     <div class="sticky-box">
       <div class="scene active" id="scene-1"><div class="gravity-core"><div class="glowing-orb" id="orb"></div><div class="ripple" id="ripple"></div></div><h1 class="story-text">It started with gravity.</h1></div>
@@ -236,181 +209,150 @@
     </div>
   </div>
 
+  <!-- PORTFOLIO CONTENT -->
   <div class="portfolio-content">
     
     <header class="nav-header">
-      <div class="nav-brand">G.V. NITHIN</div>
+      <div class="nav-brand sound-hover">G.V. NITHIN</div>
       <div class="nav-links">
-        <a href="#deployments">Deployments</a>
-        <a href="#initiatives">Initiatives</a>
-        <a href="#insights">Insights</a>
-        <a href="#connect">Connect Hub</a>
+        <a href="#deployments" class="sound-hover">Deployments</a>
+        <a href="#connect" class="sound-hover">Connect Hub</a>
       </div>
     </header>
 
-    <!-- Philosophy Banner -->
     <div class="philosophy-banner">
       <p><i class="fa-solid fa-bolt"></i> PHILOSOPHY: WORK SMART, NOT HARD. LEVERAGE EXISTING TOOLS TO BUILD AND SHIP FIRST.</p>
     </div>
 
-    <!-- PRODUCTION DEPLOYMENTS -->
     <section class="section" id="deployments">
       <h2 class="section-header reveal">Production Deployments</h2>
-      <p class="section-sub reveal">Direct, verifiable system builds. All architectures contain live working video telemetry straight from production.</p>
+      <p class="section-sub reveal">Direct, verifiable system builds. All architectures contain live working video telemetry.</p>
       
       <div class="bento-grid">
         
-        <!-- 1. Nithin-ASI (Linked to HuggingFace) -->
-        <div class="bento-card reveal">
+        <!-- 1. Nithin-ASI -->
+        <div class="bento-card reveal open-project sound-hover sound-click" 
+             data-title="Nithin-ASI" 
+             data-tech="Local LLM | GGUF | PyTorch" 
+             data-desc="Fine-tuned standalone enterprise reasoning models running completely local with absolute data privacy and zero recurring cloud API overhead." 
+             data-yt="https://www.youtube-nocookie.com/embed/iiW4a9M__cA?rel=0" 
+             data-live="https://huggingface.co/NithinAI12/Nithin-ASI-v1/blob/main/Nithin_ASI_Final.gguf">
           <div>
-            <div class="video-frame"><iframe src="https://www.youtube.com/embed/iiW4a9M__cA?rel=0" allowfullscreen></iframe></div>
-            <div class="tech-tags"><span class="tech-tag">Local LLM</span><span class="tech-tag">GGUF</span><span class="tech-tag">PyTorch</span></div>
+            <div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/iiW4a9M__cA?rel=0" allowfullscreen></iframe></div>
+            <div class="tech-tags"><span class="tech-tag">Local LLM</span><span class="tech-tag">GGUF</span></div>
             <h3>1. Nithin-ASI</h3>
-            <p>Fine-tuned standalone enterprise reasoning models running completely local with absolute data privacy and zero recurring cloud API overhead.</p>
+            <p>Fine-tuned standalone reasoning models running completely local.</p>
           </div>
-          <div class="card-footer-action">
-            <span class="btn-inspect open-project" 
-                  data-title="Nithin-ASI" 
-                  data-tech="Local LLM | GGUF | PyTorch" 
-                  data-desc="Fine-tuned standalone enterprise reasoning models running completely local. Ensures absolute data privacy with zero recurring API costs. Optimized for edge hardware execution." 
-                  data-yt="https://www.youtube.com/embed/iiW4a9M__cA" 
-                  data-live="https://huggingface.co/NithinAI12/Nithin-ASI-v1/blob/main/Nithin_ASI_Final.gguf">
-              Inspect Architecture <i class="fa-solid fa-arrow-right"></i>
-            </span>
-          </div>
+          <div class="card-footer-action"><span class="btn-inspect">Inspect Architecture <i class="fa-solid fa-arrow-right"></i></span></div>
         </div>
 
-        <!-- 2. Nithin Lang (Linked to GitHub) -->
-        <div class="bento-card reveal">
+        <!-- 2. Nithin Lang -->
+        <div class="bento-card reveal open-project sound-hover sound-click" 
+             data-title="Nithin Lang" 
+             data-tech="Custom Compiler | C++ | Architecture" 
+             data-desc="A proprietary programming language and grammar designed for high-speed hardware-level AI integrations and optimized neural state engines." 
+             data-yt="https://www.youtube-nocookie.com/embed/Xr84E_5VJqA?rel=0" 
+             data-live="https://github.com/VeeraNithin/NithinLang">
           <div>
-            <div class="video-frame"><iframe src="https://www.youtube.com/embed/Xr84E_5VJqA?rel=0" allowfullscreen></iframe></div>
-            <div class="tech-tags"><span class="tech-tag">Custom Compiler</span><span class="tech-tag">C++</span><span class="tech-tag">Syntax Architecture</span></div>
+            <div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/Xr84E_5VJqA?rel=0" allowfullscreen></iframe></div>
+            <div class="tech-tags"><span class="tech-tag">Custom Compiler</span><span class="tech-tag">Architecture</span></div>
             <h3>2. Nithin Lang</h3>
-            <p>A proprietary programming language and grammar designed for high-speed hardware-level AI integrations and optimized neural state engines.</p>
+            <p>Proprietary programming syntax designed for high-speed hardware AI integrations.</p>
           </div>
-          <div class="card-footer-action">
-            <span class="btn-inspect open-project" 
-                  data-title="Nithin Lang" 
-                  data-tech="Custom Compiler | C++ | Architecture" 
-                  data-desc="A proprietary programming language and syntax designed from the ground up for high-speed hardware-level AI integrations and optimized neural deployments." 
-                  data-yt="https://www.youtube.com/embed/Xr84E_5VJqA" 
-                  data-live="https://github.com/VeeraNithin/NithinLang">
-              Inspect Architecture <i class="fa-solid fa-arrow-right"></i>
-            </span>
-          </div>
+          <div class="card-footer-action"><span class="btn-inspect">Inspect Architecture <i class="fa-solid fa-arrow-right"></i></span></div>
         </div>
         
-        <!-- 3. MMN - v1.0 (Linked to GitHub) -->
-        <div class="bento-card reveal">
+        <!-- 3. MMN - v1.0 -->
+        <div class="bento-card reveal open-project sound-hover sound-click" 
+             data-title="MMN-v1.0" 
+             data-tech="Hardware AI | Custom IDE | Edge Logic" 
+             data-desc="Custom-built machine IDE and graphical pipeline bridging neural model weights directly onto low-power embedded microcontrollers." 
+             data-yt="https://www.youtube-nocookie.com/embed/kieRvGnomjQ?rel=0" 
+             data-live="https://github.com/VeeraNithin/MMN-v1.0">
           <div>
-            <div class="video-frame"><iframe src="https://www.youtube.com/embed/kieRvGnomjQ?rel=0" allowfullscreen></iframe></div>
-            <div class="tech-tags"><span class="tech-tag">Embedded ML</span><span class="tech-tag">Custom IDE</span><span class="tech-tag">Microcontrollers</span></div>
+            <div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/kieRvGnomjQ?rel=0" allowfullscreen></iframe></div>
+            <div class="tech-tags"><span class="tech-tag">Hardware AI</span><span class="tech-tag">Custom IDE</span></div>
             <h3>3. MMN - v1.0</h3>
-            <p>Custom-built machine IDE and graphical pipeline bridging neural model weights directly onto low-power embedded microcontrollers.</p>
+            <p>Custom-built machine IDE bridging ML logic onto micro-controllers.</p>
           </div>
-          <div class="card-footer-action">
-            <span class="btn-inspect open-project" 
-                  data-title="MMN-v1.0" 
-                  data-tech="Hardware AI | Custom IDE | Edge Logic" 
-                  data-desc="Custom-built machine IDE bridging complex machine learning logic directly onto embedded micro-controllers without intermediate cloud processing." 
-                  data-yt="https://www.youtube.com/embed/kieRvGnomjQ" 
-                  data-live="https://github.com/VeeraNithin/MMN-v1.0">
-              Inspect Architecture <i class="fa-solid fa-arrow-right"></i>
-            </span>
-          </div>
+          <div class="card-footer-action"><span class="btn-inspect">Inspect Architecture <i class="fa-solid fa-arrow-right"></i></span></div>
         </div>
 
-        <!-- 4. VR Edge (Linked to GitHub) -->
-        <div class="bento-card reveal">
+        <!-- 4. VR Edge -->
+        <div class="bento-card reveal open-project sound-hover sound-click" 
+             data-title="VR Edge" 
+             data-tech="Computer Vision | Edge AI | Telemetry" 
+             data-desc="Localized neural object tracking deployment processing real-time visual telemetry arrays directly on high-speed edge hardware." 
+             data-yt="https://www.youtube-nocookie.com/embed/Fado1Z9WxLo?rel=0" 
+             data-live="https://github.com/nithin12-ngi/Vinayaka-robotics-new-projects">
           <div>
-            <div class="video-frame"><iframe src="https://www.youtube.com/embed/Fado1Z9WxLo?rel=0" allowfullscreen></iframe></div>
-            <div class="tech-tags"><span class="tech-tag">Computer Vision</span><span class="tech-tag">Edge AI</span><span class="tech-tag">IoT Telemetry</span></div>
+            <div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/Fado1Z9WxLo?rel=0" allowfullscreen></iframe></div>
+            <div class="tech-tags"><span class="tech-tag">Computer Vision</span><span class="tech-tag">Edge AI</span></div>
             <h3>4. VR Edge</h3>
-            <p>Localized neural object tracking deployment processing real-time visual telemetry arrays directly on high-speed edge hardware with ultra-low latency.</p>
+            <p>Localized neural object tracking deployment processing visual telemetry on edge hardware.</p>
           </div>
-          <div class="card-footer-action">
-            <span class="btn-inspect open-project" 
-                  data-title="VR Edge" 
-                  data-tech="Computer Vision | Edge AI | Telemetry" 
-                  data-desc="Localized neural object tracking deployment processing visual telemetry arrays directly on high-speed edge hardware with minimal latency." 
-                  data-yt="https://www.youtube.com/embed/Fado1Z9WxLo" 
-                  data-live="https://github.com/nithin12-ngi/Vinayaka-robotics-new-projects">
-              Inspect Architecture <i class="fa-solid fa-arrow-right"></i>
-            </span>
-          </div>
+          <div class="card-footer-action"><span class="btn-inspect">Inspect Architecture <i class="fa-solid fa-arrow-right"></i></span></div>
         </div>
 
-        <!-- 5. N-Meet (Linked to GitHub) -->
-        <div class="bento-card reveal">
+        <!-- 5. N-Meet -->
+        <div class="bento-card reveal open-project sound-hover sound-click" 
+             data-title="N-Meet" 
+             data-tech="WebRTC | Node.js | P2P Routing" 
+             data-desc="High-fidelity peer-to-peer data communications interface optimizing structural routing matrices for minimum video transit delay." 
+             data-yt="https://www.youtube-nocookie.com/embed/2KKhRMHVxfY?rel=0" 
+             data-live="https://github.com/nithin12-ngi/N-Meet">
           <div>
-            <div class="video-frame"><iframe src="https://www.youtube.com/embed/2KKhRMHVxfY?rel=0" allowfullscreen></iframe></div>
-            <div class="tech-tags"><span class="tech-tag">WebRTC</span><span class="tech-tag">Node.js</span><span class="tech-tag">P2P Routing</span></div>
+            <div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/2KKhRMHVxfY?rel=0" allowfullscreen></iframe></div>
+            <div class="tech-tags"><span class="tech-tag">WebRTC</span><span class="tech-tag">Node.js</span></div>
             <h3>5. N-Meet</h3>
-            <p>High-fidelity peer-to-peer data communications interface optimizing structural routing matrices for minimum video transit delay.</p>
+            <p>High-fidelity data communications engine optimizing peer routing matrices.</p>
           </div>
-          <div class="card-footer-action">
-            <span class="btn-inspect open-project" 
-                  data-title="N-Meet" 
-                  data-tech="WebRTC | Node.js | P2P Routing" 
-                  data-desc="High-fidelity corporate data communications engine optimizing structural routing matrices for minimum video transit delay in peer-to-peer environments." 
-                  data-yt="https://www.youtube.com/embed/2KKhRMHVxfY" 
-                  data-live="https://github.com/nithin12-ngi/N-Meet">
-              Inspect Architecture <i class="fa-solid fa-arrow-right"></i>
-            </span>
-          </div>
+          <div class="card-footer-action"><span class="btn-inspect">Inspect Architecture <i class="fa-solid fa-arrow-right"></i></span></div>
         </div>
 
-        <!-- 6. Auto News Poster (VIDEO ONLY AS REQUESTED) -->
-        <div class="bento-card reveal">
+        <!-- 6. Auto News Poster (No Live Link, Video Only) -->
+        <div class="bento-card reveal sound-hover">
           <div>
-            <div class="video-frame"><iframe src="https://www.youtube.com/embed/2Ou0xfLiacw?rel=0" allowfullscreen></iframe></div>
-            <div class="tech-tags"><span class="tech-tag">Make.com</span><span class="tech-tag">Gemini API</span><span class="tech-tag">Automated Ingestion</span></div>
+            <div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/2Ou0xfLiacw?rel=0" allowfullscreen></iframe></div>
+            <div class="tech-tags"><span class="tech-tag">Make.com</span><span class="tech-tag">Gemini API</span></div>
             <h3>6. Auto News Poster</h3>
-            <p>Zero-touch data pipeline executing raw RSS telemetry parsing into fully autonomous SEO web content systems without manual input.</p>
+            <p>Zero-touch data pipeline executing raw telemetry parsing into autonomous SEO content systems.</p>
           </div>
-          <div class="card-footer-action">
-            <span class="video-only-badge"><i class="fa-solid fa-video"></i> Video Verification Only</span>
-          </div>
+          <div class="card-footer-action"><span class="video-only-badge"><i class="fa-solid fa-video"></i> Video Verification Only</span></div>
         </div>
 
-        <!-- 7. Voiceflow Systems (VIDEO ONLY AS REQUESTED) -->
-        <div class="bento-card reveal">
+        <!-- 7. Voiceflow Systems (No Live Link, Video Only) -->
+        <div class="bento-card reveal sound-hover">
           <div>
-            <div class="video-frame"><iframe src="https://www.youtube.com/embed/NHXEc61YUyM?rel=0" allowfullscreen></iframe></div>
-            <div class="tech-tags"><span class="tech-tag">Conversational AI</span><span class="tech-tag">LLM Logic</span><span class="tech-tag">Dynamic Webhooks</span></div>
+            <div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/NHXEc61YUyM?rel=0" allowfullscreen></iframe></div>
+            <div class="tech-tags"><span class="tech-tag">Conversational AI</span><span class="tech-tag">LLM Logic</span></div>
             <h3>7. Voiceflow Systems</h3>
-            <p>Advanced automated conversational agents mapping complex user intent to actionable backend database triggers and webhooks.</p>
+            <p>Automated agents mapping complex user intent to actionable backend database triggers.</p>
           </div>
-          <div class="card-footer-action">
-            <span class="video-only-badge"><i class="fa-solid fa-video"></i> Video Verification Only</span>
-          </div>
+          <div class="card-footer-action"><span class="video-only-badge"><i class="fa-solid fa-video"></i> Video Verification Only</span></div>
         </div>
 
-        <!-- 8. Nithinverse (Linked to GitHub) -->
-        <div class="bento-card reveal">
+        <!-- 8. Nithinverse -->
+        <div class="bento-card reveal open-project sound-hover sound-click" 
+             data-title="Nithinverse" 
+             data-tech="Ecosystem | Infrastructure | API Matrix" 
+             data-desc="A unified structural ecosystem binding disparate AI engines, hardware endpoints, and automation architectures into a single command matrix." 
+             data-yt="https://www.youtube-nocookie.com/embed/65o_-yyxQBA?rel=0" 
+             data-live="https://github.com/VeeraNithin/NithinVerse">
           <div>
-            <div class="video-frame"><iframe src="https://www.youtube.com/embed/65o_-yyxQBA?rel=0" allowfullscreen></iframe></div>
-            <div class="tech-tags"><span class="tech-tag">Ecosystem Matrix</span><span class="tech-tag">Infrastructure</span><span class="tech-tag">Centralized Hub</span></div>
+            <div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/65o_-yyxQBA?rel=0" allowfullscreen></iframe></div>
+            <div class="tech-tags"><span class="tech-tag">Ecosystem</span><span class="tech-tag">Infrastructure</span></div>
             <h3>8. Nithinverse</h3>
-            <p>A unified structural ecosystem binding disparate AI engines, hardware endpoints, and automation architectures into a single command matrix.</p>
+            <p>A unified structural ecosystem binding disparate AI engines into a single control matrix.</p>
           </div>
-          <div class="card-footer-action">
-            <span class="btn-inspect open-project" 
-                  data-title="Nithinverse" 
-                  data-tech="Ecosystem | Infrastructure | API Matrix" 
-                  data-desc="A unified structural ecosystem binding disparate AI engines, hardware endpoints, and automation architectures into a single command control matrix." 
-                  data-yt="https://www.youtube.com/embed/65o_-yyxQBA" 
-                  data-live="https://github.com/VeeraNithin/NithinVerse">
-              Inspect Architecture <i class="fa-solid fa-arrow-right"></i>
-            </span>
-          </div>
+          <div class="card-footer-action"><span class="btn-inspect">Inspect Architecture <i class="fa-solid fa-arrow-right"></i></span></div>
         </div>
 
-        <!-- 9. HuggingFace Custom Card from Old Template -->
-        <a href="https://huggingface.co/NithinAI12/NithinX-Omni-Tokenizer-400k" target="_blank" class="bento-card hf-card reveal" style="text-decoration: none;">
+        <!-- 9. HuggingFace Custom Card -->
+        <a href="https://huggingface.co/NithinAI12/NithinX-Omni-Tokenizer-400k" target="_blank" class="bento-card hf-card reveal sound-hover sound-click" style="text-decoration: none;">
           <div>
             <div style="height: 140px; display: flex; align-items: center; justify-content: center; background: rgba(255,204,0,0.03); border-radius: 16px; margin-bottom: 24px; border: 1px dashed rgba(255,204,0,0.2);">
-              <i class="fa-solid fa-cube" style="font-size: 3rem; color: #ffcc00;"></i>
+              <i class="fa-solid fa-cube" style="font-size: 3rem; color: #ffcc00; filter: drop-shadow(0 0 20px rgba(255,204,0,0.5));"></i>
             </div>
             <div class="tech-tags"><span class="tech-tag" style="background: rgba(255,204,0,0.1); color: #ffcc00; border: none;">Base Weights</span><span class="tech-tag">HuggingFace</span></div>
             <h3 style="color: #fff;">NithinX-Omni-Tokenizer-400k</h3>
@@ -424,96 +366,22 @@
       </div>
     </section>
 
-    <!-- INITIATIVES & BOOTCAMPS (LONG ATTRACTIVE SECTION) -->
-    <section class="section" id="initiatives" style="border-top: 1px solid var(--glass-border);">
-      <h2 class="section-header reveal">Initiatives &amp; Engineering Labs</h2>
-      <p class="section-sub reveal">Moving beyond screens to educate, mentor, and physically execute engineering projects on the ground.</p>
-      
-      <div class="timeline-container">
-        
-        <div class="timeline-box reveal">
-          <div class="timeline-meta">// 2-MONTH COMMUNITY IMPACT</div>
-          <h3>Velangi 2-Month Summer AI Bootcamp</h3>
-          <p>Founded and executed an intensive 2-month summer training program at Velangi. Trained 30+ students in hands-on AI utilization, practical prompt architectures, and open-source model execution. Bridged the digital gap by equipping local youth with real-world computer vision and logic skills.</p>
-        </div>
-
-        <div class="timeline-box reveal">
-          <div class="timeline-meta">// CAMPUS INNOVATION</div>
-          <h3>Pydah College of Engineering Lab Developments</h3>
-          <p>Spearheading practical AI & Machine Learning applications within Pydah College of Engineering. Serving as Class Representative (CR) while designing edge robotic proofs-of-concept (NAIRO), microcontroller motor driver telemetry, and localized language model deployments.</p>
-        </div>
-
-        <div class="timeline-box reveal">
-          <div class="timeline-meta">// APPLIED SYSTEMS & PRODUCTS</div>
-          <h3>Edge Robotic Systems & Proprietary Compilers</h3>
-          <p>Engineered hardware and software bridges including NAIRO (Edge AI robot concept), Vinayaka Robotics gesture vision controls, and NithinLang custom compiler engines for deterministic neural deployment.</p>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- SEMINARS & ARTICLES -->
-    <section class="section" id="insights" style="border-top: 1px solid var(--glass-border);">
-      <h2 class="section-header reveal">Seminars &amp; Technical Insights</h2>
-      <p class="section-sub reveal">Thought leadership on local inference, edge robotics, and leveraging automation tools to accelerate time-to-market.</p>
-      
-      <div class="timeline-container">
-        
-        <div class="timeline-box reveal">
-          <div class="timeline-meta">// SEMINAR KEYNOTE</div>
-          <h3>Bilingual Technical Elocution on AI &amp; Youth</h3>
-          <p>Delivered an award-winning bilingual presentation analyzing the transition from cloud-dependent computing to localized edge inferencing. Highlighted practical avenues for engineering students to master multi-agent orchestration.</p>
-        </div>
-
-        <div class="timeline-box reveal">
-          <div class="timeline-meta">// ARCHITECTURAL PAPER</div>
-          <h3>Sub-Word Tokenization &amp; Low-Resource Engines</h3>
-          <p>Authored deep-dive structural documentation on the NithinX 400k tokenizer architecture, dissecting why massive vocabulary sizes drastically reduce latency during multilingual inference on edge microprocessors.</p>
-        </div>
-
-        <div class="timeline-box reveal">
-          <div class="timeline-meta">// WORKFLOW BLUEPRINT</div>
-          <h3>The "Work Smart, Ship First" Playbook</h3>
-          <p>Documenting the operational philosophy of combining existing enterprise APIs (Apollo, Gemini, Make) with custom local scripts to build production-grade workflows in days instead of quarters.</p>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- DIRECT CONNECT HUB (NO FORMS, INSTANT LINKS) -->
+    <!-- DIRECT CONNECT HUB -->
     <section class="section" id="connect" style="border-top: 1px solid var(--glass-border);">
       <h2 class="section-header reveal">Connect Direct.</h2>
-      <p class="section-sub reveal">No waiting forms. Reach out directly through any secure channel below.</p>
       
       <div class="connect-grid reveal">
-        <a href="https://wa.me/918187827567" target="_blank" class="connect-btn wa">
-          <i class="fa-brands fa-whatsapp"></i>
-          <span>WhatsApp</span>
-          <span class="sub">+91 81878 27567</span>
+        <a href="https://wa.me/918187827567" target="_blank" class="connect-btn wa sound-hover">
+          <i class="fa-brands fa-whatsapp"></i><span>WhatsApp</span><span class="sub">+91 81878 27567</span>
         </a>
-
-        <a href="mailto:nithingv524@gmail.com" class="connect-btn mail">
-          <i class="fa-solid fa-envelope"></i>
-          <span>Direct Email</span>
-          <span class="sub">nithingv524@gmail.com</span>
+        <a href="mailto:nithingv524@gmail.com" class="connect-btn mail sound-hover">
+          <i class="fa-solid fa-envelope"></i><span>Direct Email</span><span class="sub">nithingv524@gmail.com</span>
         </a>
-
-        <a href="https://linkedin.com/in/nithin-gv-00753b352" target="_blank" class="connect-btn li">
-          <i class="fa-brands fa-linkedin-in"></i>
-          <span>LinkedIn</span>
-          <span class="sub">/in/nithin-gv-00753b352</span>
+        <a href="https://linkedin.com/in/nithin-gv-00753b352" target="_blank" class="connect-btn li sound-hover">
+          <i class="fa-brands fa-linkedin-in"></i><span>LinkedIn</span><span class="sub">/in/nithin-gv-00753b352</span>
         </a>
-
-        <a href="https://github.com/VeeraNithin" target="_blank" class="connect-btn gh">
-          <i class="fa-brands fa-github"></i>
-          <span>GitHub</span>
-          <span class="sub">@VeeraNithin</span>
-        </a>
-
-        <a href="https://instagram.com/_s.yntax.error" target="_blank" class="connect-btn ig">
-          <i class="fa-brands fa-instagram"></i>
-          <span>Instagram</span>
-          <span class="sub">@_s.yntax.error</span>
+        <a href="https://github.com/VeeraNithin" target="_blank" class="connect-btn gh sound-hover">
+          <i class="fa-brands fa-github"></i><span>GitHub</span><span class="sub">@VeeraNithin</span>
         </a>
       </div>
 
@@ -523,20 +391,19 @@
           <img class="profile-img" alt="G.V. Nithin Profile">
           <div class="profile-info">
             <h3>G.V. Nithin</h3>
-            <p>// AI SYSTEMS ARCHITECT &amp; EDGE ROBOTICS BUILDER</p>
+            <p>// AI SYSTEMS ARCHITECT & EDGE ROBOTICS BUILDER</p>
           </div>
         </div>
         <div>
-          <a href="mailto:nithingv524@gmail.com" class="test-it-btn" style="text-decoration: none;">
+          <a href="mailto:nithingv524@gmail.com" class="interactive-btn sound-hover sound-click">
             <i class="fa-solid fa-paper-plane"></i> Initialize Transmission
           </a>
         </div>
       </div>
     </section>
 
-    <!-- FOOTER WITH LEGAL COPYRIGHT -->
     <footer class="footer">
-      <div class="footer-text">DESIGNED &amp; ENGINEERED BY G.V. NITHIN. ALL ARCHITECTURAL LOGIC VERIFIED.</div>
+      <div class="footer-text">DESIGNED & ENGINEERED BY G.V. NITHIN.</div>
       <div class="footer-copyright">&copy; 2026 G.V. Nithin. All Rights Reserved. All systems operational.</div>
     </footer>
   </div>
@@ -545,7 +412,7 @@
   <div id="project-page" class="project-page-overlay">
     <div class="pp-header">
         <div class="nav-brand" style="font-family: var(--font-code); color: #aaa;">// ARCHITECTURE.INSPECT</div>
-        <button class="pp-close-btn" id="close-btn"><i class="fa-solid fa-arrow-left"></i> Return to Deployments</button>
+        <button class="pp-close-btn sound-hover" id="close-btn"><i class="fa-solid fa-arrow-left"></i> Return to Deployments</button>
     </div>
     
     <div class="pp-content">
@@ -556,14 +423,8 @@
                 <p id="pp-desc" class="pp-desc">Description goes here.</p>
                 
                 <div class="pp-specs">
-                    <div class="spec-item">
-                        <span class="spec-label">System State</span>
-                        <span class="spec-value"><div class="status-dot"></div> Active Deployment</span>
-                    </div>
-                    <div class="spec-item">
-                        <span class="spec-label">Execution Environment</span>
-                        <span class="spec-value" id="pp-node-type"><i class="fa-solid fa-globe"></i> Web / Edge Node</span>
-                    </div>
+                    <div class="spec-item"><span class="spec-label">System State</span><span class="spec-value"><div class="status-dot"></div> Active Deployment</span></div>
+                    <div class="spec-item"><span class="spec-label">Access Node</span><span class="spec-value" id="pp-node-type"><i class="fa-solid fa-globe"></i> Web / Edge Node</span></div>
                 </div>
             </div>
             <div class="pp-video-container">
@@ -576,14 +437,12 @@
                 <h3 style="font-size: 1.5rem; color: #fff; margin-bottom: 8px; font-weight: 800;">Live Initialization</h3>
                 <p style="color: #888; font-size: 1.05rem;">Boot architecture or inspect production source repository.</p>
             </div>
-            <button class="test-it-btn" id="test-btn"><i class="fa-solid fa-bolt"></i> Boot Live System</button>
+            <button class="test-it-btn sound-hover sound-click" id="test-btn"><i class="fa-solid fa-bolt"></i> Boot Live System</button>
         </div>
 
         <div class="live-website-container" id="live-container">
             <div class="mac-header">
-                <div class="mac-dot mac-red"></div>
-                <div class="mac-dot mac-yellow"></div>
-                <div class="mac-dot mac-green"></div>
+                <div class="mac-dot mac-red"></div><div class="mac-dot mac-yellow"></div><div class="mac-dot mac-green"></div>
                 <div class="mac-title" id="mac-url">connecting...</div>
             </div>
             <iframe id="pp-live-frame" src=""></iframe>
@@ -592,8 +451,165 @@
   </div>
 
   <script>
-    // Scroll Animation Logic
+    // ==========================================
+    // 1. WEB AUDIO API SOUND ENGINE (ZERO ASSETS)
+    // ==========================================
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    let audioCtx;
+    let audioEnabled = false;
+
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new AudioContext();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        audioEnabled = !audioEnabled; // Toggle
+        
+        const icon = document.getElementById('audio-icon');
+        const text = document.getElementById('audio-text');
+        
+        if(audioEnabled) {
+            icon.className = 'fa-solid fa-volume-high';
+            text.innerText = 'Audio Engine Active';
+            document.getElementById('audio-unlock').style.background = 'var(--cyan)';
+            document.getElementById('audio-unlock').style.color = '#000';
+            playBeep(600, 'sine', 0.1, 0.1);
+            playBeep(800, 'sine', 0.15, 0.1, 0.1);
+        } else {
+            icon.className = 'fa-solid fa-volume-xmark';
+            text.innerText = 'Enable Audio Engine';
+            document.getElementById('audio-unlock').style.background = 'rgba(0, 242, 254, 0.1)';
+            document.getElementById('audio-unlock').style.color = 'var(--cyan)';
+        }
+    }
+
+    function playBeep(freq, type, duration, vol, delay=0) {
+        if(!audioEnabled || !audioCtx) return;
+        setTimeout(() => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            
+            gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }, delay * 1000);
+    }
+
+    function playSwoosh() {
+        if(!audioEnabled || !audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(100, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(20, audioCtx.currentTime + 0.5);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.5);
+    }
+
+    // Attach sound events
+    document.querySelectorAll('.sound-hover').forEach(el => {
+        el.addEventListener('mouseenter', () => playBeep(900, 'sine', 0.05, 0.02));
+    });
+    document.querySelectorAll('.sound-click').forEach(el => {
+        el.addEventListener('click', () => {
+            playBeep(300, 'square', 0.1, 0.05);
+            playBeep(450, 'square', 0.15, 0.05, 0.1);
+        });
+    });
+
+    // ==========================================
+    // 2. AMBIENT CANVAS (AIR & METEORS)
+    // ==========================================
+    const ambCanvas = document.getElementById('ambientCanvas');
+    const ambCtx = ambCanvas.getContext('2d');
+    
+    function resizeAmbient() { ambCanvas.width = window.innerWidth; ambCanvas.height = window.innerHeight; }
+    window.addEventListener('resize', resizeAmbient); resizeAmbient();
+
+    let mouse = { x: -1000, y: -1000 };
+    window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+    // Air Particles
+    let airParticles = [];
+    for(let i=0; i<60; i++) {
+        airParticles.push({
+            x: Math.random() * ambCanvas.width, y: Math.random() * ambCanvas.height,
+            vx: (Math.random() - 0.5) * 0.3, vy: -Math.random() * 0.5 - 0.1,
+            size: Math.random() * 1.5 + 0.5,
+            baseX: 0
+        });
+    }
+
+    // Meteors
+    let meteors = [];
+    function spawnMeteor() {
+        if(Math.random() < 0.02) { // 2% chance per frame
+            meteors.push({
+                x: Math.random() * ambCanvas.width + ambCanvas.width/2, y: -50,
+                length: Math.random() * 80 + 40,
+                speed: Math.random() * 10 + 15,
+                opacity: 1
+            });
+        }
+    }
+
+    function drawAmbient() {
+        ambCtx.clearRect(0, 0, ambCanvas.width, ambCanvas.height);
+        
+        // Draw Air
+        ambCtx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        airParticles.forEach(p => {
+            // Magnetic effect from mouse
+            let dx = mouse.x - p.x; let dy = mouse.y - p.y;
+            let dist = Math.hypot(dx, dy);
+            if(dist < 150) {
+                p.x -= dx * 0.01; p.y -= dy * 0.01;
+            }
+            
+            p.x += p.vx; p.y += p.vy;
+            if(p.y < 0) { p.y = ambCanvas.height; p.x = Math.random() * ambCanvas.width; }
+            if(p.x < 0 || p.x > ambCanvas.width) p.vx *= -1;
+
+            ambCtx.beginPath(); ambCtx.arc(p.x, p.y, p.size, 0, Math.PI*2); ambCtx.fill();
+        });
+
+        // Draw Meteors
+        spawnMeteor();
+        for(let i = meteors.length - 1; i >= 0; i--) {
+            let m = meteors[i];
+            m.x -= m.speed; m.y += m.speed;
+            m.opacity -= 0.01;
+
+            let grad = ambCtx.createLinearGradient(m.x, m.y, m.x + m.length, m.y - m.length);
+            grad.addColorStop(0, `rgba(0, 242, 254, ${m.opacity})`);
+            grad.addColorStop(1, 'rgba(0, 242, 254, 0)');
+
+            ambCtx.strokeStyle = grad; ambCtx.lineWidth = 2;
+            ambCtx.beginPath(); ambCtx.moveTo(m.x, m.y); ambCtx.lineTo(m.x + m.length, m.y - m.length); ambCtx.stroke();
+
+            if(m.opacity <= 0 || m.y > ambCanvas.height) meteors.splice(i, 1);
+        }
+        requestAnimationFrame(drawAmbient);
+    }
+    drawAmbient();
+
+    // ==========================================
+    // 3. SCROLL NARRATIVE & UI LOGIC
+    // ==========================================
     let isTicking = false;
+    let lastScene = -1;
+
     window.addEventListener('scroll', () => {
       if (!isTicking) { window.requestAnimationFrame(updateNarrative); isTicking = true; }
     });
@@ -603,6 +619,12 @@
       progress = Math.max(0, Math.min(progress, 1));
       let currentScene = progress > 0.75 ? 3 : progress > 0.50 ? 2 : progress > 0.25 ? 1 : 0;
       
+      // Play swoosh sound if scene changes
+      if(currentScene !== lastScene) {
+          playSwoosh();
+          lastScene = currentScene;
+      }
+
       document.querySelectorAll('.scene').forEach((scene, index) => {
         scene.classList.toggle('active', index === currentScene);
       });
@@ -616,7 +638,7 @@
       isTicking = false;
     }
 
-    // Modal & Link Bypass Logic
+    // Modal Logic
     const projectPage = document.getElementById('project-page');
     const closeBtn = document.getElementById('close-btn');
     const testBtn = document.getElementById('test-btn');
@@ -627,6 +649,8 @@
     document.querySelectorAll('.open-project').forEach(card => {
         card.addEventListener('click', function(e) {
             e.stopPropagation();
+            playSwoosh(); // Sound effect
+            
             const title = this.getAttribute('data-title');
             const desc = this.getAttribute('data-desc');
             const ytLink = this.getAttribute('data-yt');
@@ -659,6 +683,7 @@
     });
 
     closeBtn.addEventListener('click', () => {
+        playSwoosh();
         projectPage.classList.remove('open');
         document.body.classList.remove('modal-open');
         setTimeout(() => { document.getElementById('pp-yt').src = ""; liveFrame.src = ""; liveFrame.removeAttribute('srcdoc'); }, 500);
@@ -702,6 +727,43 @@
       });
     }, { threshold: 0.1 });
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Neural Canvas for Scene 3
+    const nCanvas = document.getElementById('neuralCanvas');
+    const nCtx = nCanvas.getContext('2d');
+    function resizeN() { nCanvas.width = window.innerWidth; nCanvas.height = window.innerHeight; }
+    window.addEventListener('resize', resizeN); resizeN();
+
+    let nParticles = [];
+    for(let i=0; i<40; i++) {
+      nParticles.push({
+        x: Math.random() * nCanvas.width, y: Math.random() * nCanvas.height,
+        vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5
+      });
+    }
+
+    function drawNeural() {
+      nCtx.clearRect(0, 0, nCanvas.width, nCanvas.height);
+      nCtx.fillStyle = '#fff'; nCtx.lineWidth = 0.5;
+      for(let i=0; i<nParticles.length; i++) {
+        let p = nParticles[i];
+        p.x += p.vx; p.y += p.vy;
+        if(p.x < 0 || p.x > nCanvas.width) p.vx *= -1;
+        if(p.y < 0 || p.y > nCanvas.height) p.vy *= -1;
+        nCtx.beginPath(); nCtx.arc(p.x, p.y, 1.5, 0, Math.PI*2); nCtx.fill();
+
+        for(let j=i+1; j<nParticles.length; j++) {
+          let p2 = nParticles[j];
+          let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+          if(dist < 120) {
+            nCtx.strokeStyle = `rgba(255, 255, 255, ${0.2 - dist/600})`;
+            nCtx.beginPath(); nCtx.moveTo(p.x, p.y); nCtx.lineTo(p2.x, p2.y); nCtx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(drawNeural);
+    }
+    drawNeural();
   </script>
 </body>
 </html>
