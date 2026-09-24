@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>G.V. Nithin | AI Systems Architect</title>
+  <title>G.V. Nithin</title>
   
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   
@@ -141,15 +141,21 @@
     .profile-card-hub { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 28px; padding: 50px; display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; backdrop-filter: blur(10px); transition: 0.4s;}
     .profile-card-hub:hover { border-color: var(--cyan); box-shadow: 0 0 40px rgba(0, 242, 254, 0.1); }
     .profile-left { display: flex; align-items: center; gap: 30px; flex-wrap: wrap;}
-    .profile-img { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 2px solid var(--glass-border); content: url('image_3455c0.jpg'); background: #111; transition: 0.5s; filter: grayscale(20%);}
-    .profile-card-hub:hover .profile-img { filter: grayscale(0%); border-color: var(--cyan); transform: rotate(5deg) scale(1.05);}
+    
+    .profile-img-neon { 
+        width: 140px; height: 140px; border-radius: 50%; border: 2px solid var(--cyan);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 3.5rem; color: var(--cyan); font-family: 'JetBrains Mono', monospace; font-weight: 800;
+        text-shadow: 0 0 20px rgba(0, 242, 254, 0.8);
+        box-shadow: 0 0 30px rgba(0, 242, 254, 0.2);
+    }
+    
     .profile-info h3 { font-size: 2.2rem; color: #fff; margin-bottom: 6px; font-weight: 800;}
-    .profile-info p { color: var(--cyan); font-family: var(--font-code); font-size: 0.95rem;}
     
     .interactive-btn { background: #fff; color: #000; padding: 15px 30px; border-radius: 12px; font-weight: 700; text-decoration: none; transition: 0.3s; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; border: none; font-size: 1rem;}
     .interactive-btn:hover { background: var(--cyan); transform: scale(1.05); box-shadow: 0 10px 20px rgba(0, 242, 254, 0.3);}
 
-    /* Modal Styles (Shortened for brevity but fully functional) */
+    /* Modal Styles */
     .project-page-overlay { position: fixed; top: 100vh; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle at 50% 0%, rgba(10, 30, 50, 0.6), transparent 50%), #030303; z-index: 100000; overflow-y: auto; transition: top 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; flex-direction: column; }
     .project-page-overlay.open { top: 0; }
     .pp-header { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; padding: 20px 5vw; background: rgba(3,3,3,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); z-index: 10; }
@@ -193,7 +199,7 @@
   <!-- AMBIENT CANVAS (AIR PARTICLES & METEORS) -->
   <canvas id="ambientCanvas"></canvas>
 
-  <!-- SOUND ACTIVATION (Required by browsers to play audio) -->
+  <!-- SOUND ACTIVATION -->
   <div id="audio-unlock" onclick="initAudio()">
     <i class="fa-solid fa-volume-xmark" id="audio-icon"></i> 
     <span id="audio-text">Enable Audio Engine</span>
@@ -310,7 +316,7 @@
           <div class="card-footer-action"><span class="btn-inspect">Inspect Architecture <i class="fa-solid fa-arrow-right"></i></span></div>
         </div>
 
-        <!-- 6. Auto News Poster (No Live Link, Video Only) -->
+        <!-- 6. Auto News Poster -->
         <div class="bento-card reveal sound-hover">
           <div>
             <div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/2Ou0xfLiacw?rel=0" allowfullscreen></iframe></div>
@@ -321,7 +327,7 @@
           <div class="card-footer-action"><span class="video-only-badge"><i class="fa-solid fa-video"></i> Video Verification Only</span></div>
         </div>
 
-        <!-- 7. Voiceflow Systems (No Live Link, Video Only) -->
+        <!-- 7. Voiceflow Systems -->
         <div class="bento-card reveal sound-hover">
           <div>
             <div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/NHXEc61YUyM?rel=0" allowfullscreen></iframe></div>
@@ -385,12 +391,11 @@
         </a>
       </div>
 
-      <!-- Identity Card -->
-      <!-- Identity Card -->
+      <!-- Identity Card (Cleaned up!) -->
       <div class="profile-card-hub reveal">
         <div class="profile-left">
           <!-- The Neon GV Logo (No images to break) -->
-          <div class="profile-img" style="display: flex; align-items: center; justify-content: center; font-size: 3.5rem; color: #00f2fe; font-family: 'JetBrains Mono', monospace; font-weight: 800; text-shadow: 0 0 20px rgba(0, 242, 254, 0.8);">GV</div>
+          <div class="profile-img-neon">GV</div>
           
           <div class="profile-info">
             <h3 style="margin-bottom: 0;">G.V. Nithin</h3>
